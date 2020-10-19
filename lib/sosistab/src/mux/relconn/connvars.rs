@@ -65,11 +65,11 @@ impl ConnVars {
 
     pub fn pacing_rate(&self) -> f64 {
         self.inflight.rate()
-        // * match self.flights % 5 {
-        //     0 => 1.25,
-        //     1 => 0.75,
-        //     _ => 0.8,
-        // }
+            * match self.flights % 5 {
+                0 => 1.25,
+                1 => 0.75,
+                _ => 0.95,
+            }
     }
 
     pub fn congestion_ack(&mut self) {
