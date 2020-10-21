@@ -75,7 +75,7 @@ impl AsyncWrite for BipeWriter {
         Poll::Ready(Ok(()))
     }
 
-    fn poll_close(mut self: Pin<&mut Self>, _cx: &mut Context<'_>) -> Poll<std::io::Result<()>> {
+    fn poll_close(self: Pin<&mut Self>, _cx: &mut Context<'_>) -> Poll<std::io::Result<()>> {
         self.queue.lock().0 = true;
         self.signal.notify(usize::MAX);
         Poll::Ready(Ok(()))

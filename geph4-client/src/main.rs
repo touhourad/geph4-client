@@ -1,6 +1,6 @@
 #![type_length_limit = "2000000"]
 
-use std::{io::Write, path::PathBuf, sync::Arc};
+use std::{fs::File, io::Write, path::PathBuf, sync::Arc, time::Duration};
 
 use binder_transport::BinderClient;
 use flexi_logger::{DeferredNow, Record};
@@ -11,6 +11,7 @@ mod kalive;
 mod persist;
 use once_cell::sync::Lazy;
 use prelude::*;
+use prost::Message;
 mod prelude;
 mod stats;
 
@@ -74,6 +75,21 @@ fn main() -> anyhow::Result<()> {
         }
         Ok(())
     }
+
+    let guard = pprof::ProfilerGuard::new(1000).unwrap();
+    std::thread::spawn(move || loop {
+        if let Ok(report) = guard.report().build() {
+            let mut file = File::create("profile.pb").unwrap();
+            let profile = report.pprof().unwrap();
+
+            let mut content = Vec::new();
+            profile.encode(&mut content).unwrap();
+            file.write_all(&content).unwrap();
+
+            println!("report: {}", &report);
+        }
+        std::thread::sleep(Duration::from_secs(10));
+    });
 
     flexi_logger::Logger::with_env_or_str("geph4_client = debug")
         // .format(flexi_logger::colored_detailed_format)
