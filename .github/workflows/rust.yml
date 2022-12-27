@@ -41,19 +41,17 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3
-#       - name: Install Rust
-#         uses: actions-rs/toolchain@v1
-#         with:
-#           toolchain: stable
-#           profile: minimal
-#           override: true
-#           target: ${{ matrix.target }}
+
+      - name: add android apk to path
+        if: matrix.target == 'aarch64-linux-android'
+        run: |
+          echo "$ANDROID_HOME/ndk-bundle/toolchains/llvm/prebuilt/linux-x86_64/bin" >> $GITHUB_PATH
       - name: Install musl-gcc
         if: matrix.target == 'x86_64-unknown-linux-musl' ||
           matrix.target == 'aarch64-unknown-linux-musl'
         run: sudo apt install musl-tools
       - name: Install cross
-        run: cargo install cross
+        run: cargo install cross --locked
 
       - name: Build cross
         if: matrix.target == true
