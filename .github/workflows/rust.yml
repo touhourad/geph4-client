@@ -83,7 +83,7 @@ jobs:
         run: 7z a geph4-client-${{ matrix.target }}.zip geph4-client.exe
 
       - name: 'Get Previous tag'
-        id: previoustag
+        id: previous_tag
         uses: WyriHaximus/github-action-get-previous-tag@v1
         
       - name: Artifacts
