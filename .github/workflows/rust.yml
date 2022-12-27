@@ -41,24 +41,20 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3
-      - name: Install Rust
-        uses: actions-rs/toolchain@v1
-        with:
-          toolchain: stable
-          profile: minimal
-          override: true
-          target: ${{ matrix.target }}
+#       - name: Install Rust
+#         uses: actions-rs/toolchain@v1
+#         with:
+#           toolchain: stable
+#           profile: minimal
+#           override: true
+#           target: ${{ matrix.target }}
       - name: Install musl-gcc
         if: matrix.target == 'x86_64-unknown-linux-musl' ||
           matrix.target == 'aarch64-unknown-linux-musl'
         run: sudo apt install musl-tools
 
       - name: Build
-        uses: actions-rs/cargo@v1
-        with:
-          use-cross: ${{ matrix.use-cross }}
-          command: build
-          args: --target ${{ matrix.target }} --release --locked --verbose
+        run: cross build --target ${{ matrix.target }} --release --locked --verbose
 
       - name: move
         run: mv target/${{ matrix.target }}/release/geph4-client* ./
