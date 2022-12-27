@@ -61,7 +61,7 @@ jobs:
         if: matrix.target == 'x86_64-unknown-linux-musl' ||
           matrix.target == 'aarch64-unknown-linux-musl'
         run: |
-          sudo apt install musl-tools
+          sudo apt install musl-tools libssl-dev
           export RUSTFLAGS="-C link-arg=-lgcc -Clink-arg=-static-libgcc"
 
 #       - name: Install cross
