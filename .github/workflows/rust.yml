@@ -54,10 +54,6 @@ jobs:
         run: echo "$ANDROID_NDK/toolchains/llvm/prebuilt/linux-x86_64/bin" >> $GITHUB_PATH
         if: ${{ matrix.target == 'aarch64-linux-android' }}
 
-      - name: Install GNU GCC linker [Linux (aarch64)]
-        if: matrix.target == 'aarch64-unknown-linux-musl'
-        run: sudo apt-get install -y gcc-aarch64-linux-musl
-
       - name: Install musl-gcc
         if: matrix.target == 'x86_64-unknown-linux-musl' ||
           matrix.target == 'aarch64-unknown-linux-musl'
