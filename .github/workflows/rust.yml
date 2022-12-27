@@ -53,8 +53,11 @@ jobs:
       - name: Install cross
         run: cargo install cross --locked
 
+      - name: Build
+        if: matrix.use-cross == false
+        run: cargo build --target ${{ matrix.target }} --release --locked --verbose
       - name: Build cross
-        if: matrix.target == true
+        if: matrix.use-cross == true
         run: cross build --target ${{ matrix.target }} --release --locked --verbose
 
       - name: move
