@@ -48,23 +48,29 @@ jobs:
           targets: ${{ matrix.target }}
       - name: cache
         uses: Swatinem/rust-cache@v1
-      - name: add android apk to path
-        if: matrix.target == 'aarch64-linux-android'
-        run: |
-          echo "$ANDROID_HOME/ndk-bundle/toolchains/llvm/prebuilt/linux-x86_64/bin" >> $GITHUB_PATH
+
+      - name: Set Android NDK linker path [Android (aarch64)]
+        run: echo "$ANDROID_NDK/toolchains/llvm/prebuilt/linux-x86_64/bin" >> $GITHUB_PATH
+        if: ${{ matrix.target == 'aarch64-linux-android' }}
+
+      - name: Install GNU GCC linker [Linux (aarch64)]
+        run: sudo apt-get install -y gcc-aarch64-linux-gnu
+        if: ${{ matrix.target == 'aarch64-unknown-linux-gnu' }}
+
       - name: Install musl-gcc
         if: matrix.target == 'x86_64-unknown-linux-musl' ||
           matrix.target == 'aarch64-unknown-linux-musl'
         run: sudo apt install musl-tools
-      - name: Install cross
-        uses: taiki-e/install-action@cross
+
+#       - name: Install cross
+#         uses: taiki-e/install-action@cross
 
       - name: Build
-        if: matrix.use-cross == false
+#         if: matrix.use-cross == false
         run: cargo build --target ${{ matrix.target }} --release --locked --verbose
-      - name: Build cross
-        if: matrix.use-cross == true
-        run: cross build --target ${{ matrix.target }} --release --locked --verbose
+#       - name: Build cross
+#         if: matrix.use-cross == true
+#         run: cross build --target ${{ matrix.target }} --release --locked --verbose
 
       - name: move
         run: mv target/${{ matrix.target }}/release/geph4-client* ./
