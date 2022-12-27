@@ -42,6 +42,10 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
 
+      - name: Install Rust
+        uses: dtolnay/rust-toolchain@stable
+      - name: cache
+        uses: Swatinem/rust-cache@v1
       - name: add android apk to path
         if: matrix.target == 'aarch64-linux-android'
         run: |
@@ -51,7 +55,7 @@ jobs:
           matrix.target == 'aarch64-unknown-linux-musl'
         run: sudo apt install musl-tools
       - name: Install cross
-        run: cargo install cross --locked
+        uses: taiki-e/install-action@cross
 
       - name: Build
         if: matrix.use-cross == false
