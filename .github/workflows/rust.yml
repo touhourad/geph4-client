@@ -60,7 +60,9 @@ jobs:
       - name: Install musl-gcc
         if: matrix.target == 'x86_64-unknown-linux-musl' ||
           matrix.target == 'aarch64-unknown-linux-musl'
-        run: sudo apt install musl-tools
+        run: |
+          sudo apt install musl-tools
+          export RUSTFLAGS="-C link-arg=-lgcc -Clink-arg=-static-libgcc"
 
 #       - name: Install cross
 #         uses: taiki-e/install-action@cross
@@ -74,19 +76,27 @@ jobs:
 
       - name: move
         run: mv target/${{ matrix.target }}/release/geph4-client* ./
+        
       - name: Package Linux
         if: matrix.os == 'ubuntu-latest'
         run: tar czf geph4-client-${{ matrix.target }}.tar.gz geph4-client
+        
       - name: Package Windows
         if: matrix.os == 'windows-latest'
         run: 7z a geph4-client-${{ matrix.target }}.zip geph4-client.exe
 
+      - name: 'Get Previous tag'
+        id: previoustag
+        uses: WyriHaximus/github-action-get-previous-tag@v1
+        
       - name: Artifacts
         uses: actions/upload-artifact@v3
         with:
           name: ${{ matrix.target }}
           path: geph4-client*
+          
       - name: Releases
         uses: softprops/action-gh-release@v1
         with:
+          tag_name: ${{steps.previous_tag.outputs.tag}}
           files: geph4-client-${{ matrix.target }}*
