@@ -49,8 +49,7 @@ jobs:
           override: true
           target: ${{ matrix.target }}
       - name: Install musl-gcc
-        if: |
-          matrix.target == 'x86_64-unknown-linux-musl' ||
+        if: matrix.target == 'x86_64-unknown-linux-musl' ||
           matrix.target == 'aarch64-unknown-linux-musl'
         run: sudo apt install musl-tools
 
@@ -71,7 +70,7 @@ jobs:
         run: 7z a geph4-client-${{ matrix.target }}.zip geph4-client.exe
 
       - name: Artifacts
-      - uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v3
         with:
           name: ${{ matrix.target }}
           path: geph4-client*
